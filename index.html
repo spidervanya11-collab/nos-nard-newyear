@@ -106,12 +106,6 @@ body.light{
     transform:scale(.93);
 }
 
-.music-btn.playing{
-    background:linear-gradient(135deg,#a879ff,#7136c4);
-    border-color:#d8bdff;
-    box-shadow:0 0 22px #a879ff77;
-}
-
 .theme-btn.off{
     opacity:.45;
     filter:grayscale(1);
@@ -784,9 +778,8 @@ body.light .game-area{
     </div>
 
     <div class="header-buttons">
-        <button class="theme-btn" id="snowBtn" title="Снег" aria-label="Переключить снег">❄️</button>
-        <button class="theme-btn" id="themeBtn" title="Тема" aria-label="Переключить тему">☀️</button>
-        <button class="theme-btn music-btn" id="musicBtn" title="Включить музыку" aria-label="Включить музыку" aria-pressed="false">🎵</button>
+        <button class="theme-btn" id="snowBtn" title="Снег">❄️</button>
+        <button class="theme-btn" id="themeBtn" title="Тема">☀️</button>
     </div>
 
 </header>
@@ -987,9 +980,6 @@ body.light .game-area{
     </div>
 
 </div>
-
-<!-- Фоновая музыка. Положи свой файл рядом с index.html и назови его music.mp3 -->
-<audio id="backgroundMusic" src="music.mp3" loop preload="none"></audio>
 
 <script>
 
@@ -1263,39 +1253,6 @@ document.getElementById("themeBtn").addEventListener("click",function(){
         ?"🌙"
         :"☀️";
 });
-
-/* BACKGROUND MUSIC */
-const backgroundMusic=document.getElementById("backgroundMusic");
-const musicBtn=document.getElementById("musicBtn");
-backgroundMusic.volume=0.45;
-backgroundMusic.loop=true;
-
-function setMusicButton(isPlaying){
-    musicBtn.textContent=isPlaying?"🔊":"🎵";
-    musicBtn.classList.toggle("playing",isPlaying);
-    musicBtn.title=isPlaying?"Выключить музыку":"Включить музыку";
-    musicBtn.setAttribute("aria-label",musicBtn.title);
-    musicBtn.setAttribute("aria-pressed",String(isPlaying));
-}
-
-musicBtn.addEventListener("click",async()=>{
-    if(backgroundMusic.paused){
-        try{
-            await backgroundMusic.play();
-            setMusicButton(true);
-        }catch(error){
-            setMusicButton(false);
-            alert("Не удалось запустить музыку. Проверь, что файл music.mp3 загружен рядом с index.html.");
-        }
-    }else{
-        backgroundMusic.pause();
-        setMusicButton(false);
-    }
-});
-
-backgroundMusic.addEventListener("ended",()=>setMusicButton(false));
-backgroundMusic.addEventListener("pause",()=>setMusicButton(false));
-backgroundMusic.addEventListener("play",()=>setMusicButton(true));
 
 /* GLOBAL SNOW */
 
