@@ -1,0 +1,1663 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#25104b">
+<title>Nos Nard — Новый год</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --text:#ffffff;
+    --muted:#cbb9e9;
+    --card:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.15);
+}
+
+body{
+    font-family:Arial,sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    background:
+        radial-gradient(ellipse at 15% 10%,#65349c55,transparent 40%),
+        radial-gradient(ellipse at 90% 30%,#a35bff33,transparent 45%),
+        linear-gradient(135deg,#120824,#28104c,#16092c);
+    transition:.3s;
+}
+
+body.light{
+    --text:#29134a;
+    --muted:#72568f;
+    --card:rgba(255,255,255,.65);
+    --border:rgba(80,40,130,.15);
+
+    background:
+        radial-gradient(ellipse at 15% 10%,#c6a5ff88,transparent 40%),
+        radial-gradient(ellipse at 90% 30%,#e7c9ff,transparent 45%),
+        linear-gradient(135deg,#e9dcff,#f5eaff,#d8c4ff);
+}
+
+#snow{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:10;
+}
+
+.container{
+    width:min(92%,520px);
+    margin:auto;
+    padding:25px 0 110px;
+    position:relative;
+    z-index:2;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    border-radius:14px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(135deg,#b084ff,#7036c4);
+    box-shadow:0 0 25px #9b5cff55;
+}
+
+.header-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.theme-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    border-radius:14px;
+    width:44px;
+    height:44px;
+    cursor:pointer;
+    font-size:18px;
+    transition:.2s;
+}
+
+.theme-btn:active{
+    transform:scale(.93);
+}
+
+.theme-btn.off{
+    opacity:.45;
+    filter:grayscale(1);
+}
+
+.hero{
+    text-align:center;
+    margin-top:42px;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 15px;
+    border-radius:100px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:1px;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:clamp(32px,8vw,48px);
+    line-height:1.15;
+    margin-bottom:15px;
+}
+
+.gradient{
+    background:linear-gradient(90deg,#e0c3ff,#a879ff,#f2d9ff);
+    color:transparent;
+    background-clip:text;
+    -webkit-background-clip:text;
+}
+
+.subtitle{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+}
+
+.card{
+    border:1px solid var(--border);
+    background:var(--card);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:24px;
+    box-shadow:0 15px 50px #00000018;
+}
+
+.date-card{
+    margin-top:30px;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.small-label{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:8px;
+}
+
+.date{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.date-icon{
+    font-size:28px;
+}
+
+.count-card{
+    margin-top:20px;
+    padding:24px 16px;
+}
+
+.count-title{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:22px;
+    font-size:14px;
+}
+
+.timer{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+}
+
+.unit{
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:linear-gradient(145deg,#ffffff12,#ffffff04);
+    padding:18px 4px;
+    text-align:center;
+}
+
+.number{
+    font-size:clamp(27px,7vw,40px);
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    background:linear-gradient(180deg,var(--text),#c8a4ff);
+    color:transparent;
+    background-clip:text;
+    -webkit-background-clip:text;
+}
+
+.label{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:10px;
+    letter-spacing:1px;
+}
+
+.message-card{
+    margin-top:20px;
+    padding:22px 20px;
+    text-align:center;
+}
+
+.message-icon{
+    font-size:30px;
+    margin-bottom:12px;
+}
+
+.message-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:9px;
+}
+
+.message-text{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.6;
+}
+
+.decor{
+    margin-top:28px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:24px;
+    font-size:45px;
+}
+
+.decor span{
+    filter:drop-shadow(0 0 12px #c19aff55);
+    animation:float 3s ease-in-out infinite;
+}
+
+.decor span:nth-child(2){
+    animation-delay:.5s;
+}
+
+.decor span:nth-child(3){
+    animation-delay:1s;
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-7px)}
+}
+
+.footer{
+    margin-top:25px;
+    padding:18px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.7;
+}
+
+.footer strong{
+    color:var(--text);
+}
+
+/* Нижнее меню */
+
+.snowman-menu{
+    position:fixed;
+    z-index:20;
+    left:50%;
+    bottom:15px;
+    transform:translateX(-50%);
+    width:min(92%,520px);
+}
+
+.snowman-menu-btn{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    border-radius:22px;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    background:linear-gradient(135deg,#a879ff,#7136c4);
+    box-shadow:0 8px 35px #8e49d955;
+    border:1px solid #ffffff30;
+    transition:.2s;
+}
+
+.snowman-menu-btn:active{
+    transform:scale(.97);
+}
+
+.menu-icon{
+    font-size:24px;
+}
+
+/* Окно лепки */
+
+.snowman-panel{
+    position:fixed;
+    inset:0;
+    z-index:30;
+    display:none;
+    overflow-y:auto;
+    background:rgba(10,5,25,.75);
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+    padding:15px;
+}
+
+.snowman-panel.open{
+    display:block;
+}
+
+.panel-content{
+    width:min(100%,520px);
+    margin:10px auto 30px;
+    border-radius:28px;
+    padding:20px;
+    background:
+        radial-gradient(ellipse at top,#6738a855,transparent 50%),
+        linear-gradient(135deg,#20103d,#2c1452);
+    border:1px solid #ffffff22;
+    color:white;
+    box-shadow:0 20px 70px #00000050;
+}
+
+body.light .panel-content{
+    background:
+        radial-gradient(ellipse at top,#c8a5ff,transparent 50%),
+        linear-gradient(135deg,#eee0ff,#e5d4ff);
+    color:#29134a;
+}
+
+.panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.panel-title{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.close-btn{
+    width:40px;
+    height:40px;
+    border-radius:14px;
+    background:#ffffff15;
+    border:1px solid #ffffff20;
+    color:inherit;
+    font-size:20px;
+}
+
+.panel-description{
+    color:inherit;
+    opacity:.75;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:15px;
+}
+
+.snow-resource{
+    padding:14px;
+    border-radius:18px;
+    background:#ffffff0d;
+    border:1px solid #ffffff15;
+    margin-bottom:15px;
+}
+
+.resource-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.resource-bar{
+    height:14px;
+    border-radius:20px;
+    overflow:hidden;
+    background:#ffffff18;
+}
+
+.resource-fill{
+    width:0%;
+    height:100%;
+    border-radius:20px;
+    background:linear-gradient(90deg,#a9eaff,#fff,#c9b5ff);
+    transition:width .2s;
+}
+
+.game-area{
+    position:relative;
+    width:100%;
+    height:330px;
+    border-radius:24px;
+    overflow:hidden;
+    border:1px solid #ffffff25;
+    background:
+        radial-gradient(ellipse at 50% 100%,#ffffff25,transparent 70%),
+        linear-gradient(180deg,#536caa20,#ffffff10);
+    touch-action:none;
+    user-select:none;
+}
+
+body.light .game-area{
+    background:
+        radial-gradient(ellipse at 50% 100%,#ffffff80,transparent 70%),
+        linear-gradient(180deg,#a58be820,#ffffff40);
+}
+
+.game-instruction{
+    position:absolute;
+    top:12px;
+    left:12px;
+    right:12px;
+    text-align:center;
+    font-size:13px;
+    opacity:.7;
+    pointer-events:none;
+    z-index:5;
+}
+
+.game-ground{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:0;
+    background:
+        radial-gradient(ellipse at 50% 0%,#ffffff,#dcecff);
+    border-radius:50% 50% 0 0;
+    transition:height .5s;
+}
+
+.snowball-roll{
+    position:absolute;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 30% 25%,#fff 0%,#f5fdff 35%,#d7eaff 75%,#b7d5f0 100%);
+    box-shadow:
+        inset -12px -12px 22px #96b4d633,
+        0 8px 20px #00000015;
+    pointer-events:none;
+    display:none;
+    z-index:2;
+}
+
+.roll-bottom{
+    width:115px;
+    height:115px;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.roll-middle{
+    width:82px;
+    height:82px;
+    bottom:95px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.roll-head{
+    width:58px;
+    height:58px;
+    bottom:165px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.game-area.stage1 .roll-bottom{
+    display:block;
+}
+
+.game-area.stage2 .roll-bottom,
+.game-area.stage2 .roll-middle{
+    display:block;
+}
+
+.game-area.stage3 .snowball-roll{
+    display:block;
+}
+
+/* Снеговик */
+
+.snowman-figure{
+    position:absolute;
+    width:190px;
+    height:260px;
+    bottom:5px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:3;
+    pointer-events:none;
+    display:none;
+}
+
+.game-area.finished .snowman-figure{
+    display:block;
+}
+
+.figure-ball{
+    position:absolute;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 30% 25%,#fff 0%,#f6fdff 35%,#d7eaff 75%,#b7d5f0 100%);
+    box-shadow:
+        inset -12px -12px 22px #96b4d633,
+        0 8px 20px #00000015;
+}
+
+.figure-bottom{
+    width:115px;
+    height:115px;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.figure-middle{
+    width:82px;
+    height:82px;
+    bottom:95px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.figure-head{
+    width:58px;
+    height:58px;
+    bottom:165px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.snowman-figure .face{
+    position:absolute;
+    width:58px;
+    height:58px;
+    bottom:165px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.snowman-figure .eye{
+    position:absolute;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#27203a;
+    top:19px;
+}
+
+.snowman-figure .eye-left{
+    left:15px;
+}
+
+.snowman-figure .eye-right{
+    right:15px;
+}
+
+.snowman-figure .nose{
+    position:absolute;
+    width:25px;
+    height:10px;
+    background:linear-gradient(90deg,#ff9e32,#ff6b13);
+    top:29px;
+    left:28px;
+    clip-path:polygon(0 0,100% 50%,0 100%);
+    transform:rotate(-8deg);
+}
+
+.snowman-figure .mouth{
+    position:absolute;
+    display:flex;
+    gap:4px;
+    top:40px;
+    left:20px;
+}
+
+.snowman-figure .mouth i{
+    display:block;
+    width:3px;
+    height:3px;
+    background:#25203a;
+    border-radius:50%;
+}
+
+.bucket{
+    position:absolute;
+    width:65px;
+    height:45px;
+    bottom:213px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.bucket-body{
+    position:absolute;
+    left:5px;
+    top:5px;
+    width:55px;
+    height:38px;
+    background:linear-gradient(90deg,#64778d,#c2ceda,#74869c);
+    clip-path:polygon(8% 0,92% 0,80% 100%,20% 100%);
+}
+
+.bucket-rim{
+    position:absolute;
+    top:0;
+    left:0;
+    width:65px;
+    height:11px;
+    border-radius:50%;
+    background:linear-gradient(90deg,#8393a7,#e0e8ef,#8393a7);
+    border:1px solid #ffffffaa;
+}
+
+.button-dots{
+    position:absolute;
+    bottom:45px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:12px;
+}
+
+.button-dots i{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#25203a;
+}
+
+.arm{
+    position:absolute;
+    width:40px;
+    height:5px;
+    background:#80552e;
+    border-radius:10px;
+    bottom:110px;
+}
+
+.arm-left{
+    left:15px;
+    transform:rotate(-30deg);
+}
+
+.arm-right{
+    right:15px;
+    transform:rotate(30deg);
+}
+
+.game-status{
+    margin-top:15px;
+    padding:14px;
+    border-radius:18px;
+    text-align:center;
+    background:#ffffff0d;
+    border:1px solid #ffffff15;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.game-progress{
+    height:10px;
+    margin-top:12px;
+    background:#ffffff18;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.game-progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#c6a0ff,#fff);
+    border-radius:20px;
+    transition:width .2s;
+}
+
+.panel-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.panel-btn{
+    padding:14px;
+    border-radius:16px;
+    font-weight:bold;
+    font-size:14px;
+    color:white;
+    flex:1;
+    background:linear-gradient(135deg,#a879ff,#7136c4);
+}
+
+.panel-btn.secondary{
+    background:#ffffff15;
+    border:1px solid #ffffff20;
+    color:inherit;
+}
+
+.panel-btn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
+
+@media(max-width:360px){
+    .timer{
+        gap:5px;
+    }
+
+    .unit{
+        padding:14px 2px;
+    }
+
+    .number{
+        font-size:27px;
+    }
+
+    .decor{
+        gap:18px;
+        font-size:38px;
+    }
+
+    .game-area{
+        height:300px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="container">
+
+<header class="header">
+
+    <div class="brand">
+        <div class="logo">❄️</div>
+        <span>Nos Nard</span>
+    </div>
+
+    <div class="header-buttons">
+        <button class="theme-btn" id="snowBtn" title="Снег">❄️</button>
+        <button class="theme-btn" id="themeBtn" title="Тема">☀️</button>
+    </div>
+
+</header>
+
+<section class="hero">
+
+    <div class="badge">
+        ✦ ЗИМНЕЕ НАСТРОЕНИЕ ✦
+    </div>
+
+    <h1>
+        До Нового года<br>
+        <span class="gradient">осталось...</span>
+    </h1>
+
+    <p class="subtitle">
+        Самое волшебное время года уже близко ✨
+    </p>
+
+</section>
+
+<section class="card date-card">
+
+    <div>
+        <div class="small-label">Сегодняшняя дата</div>
+        <div class="date" id="today">Загрузка...</div>
+    </div>
+
+    <div class="date-icon">📅</div>
+
+</section>
+
+<section class="card count-card">
+
+    <div class="count-title">
+        🎄 До 1 января 2027 года 🎄
+    </div>
+
+    <div class="timer">
+
+        <div class="unit">
+            <div class="number" id="days">00</div>
+            <div class="label">ДНЕЙ</div>
+        </div>
+
+        <div class="unit">
+            <div class="number" id="hours">00</div>
+            <div class="label">ЧАСОВ</div>
+        </div>
+
+        <div class="unit">
+            <div class="number" id="mins">00</div>
+            <div class="label">МИНУТ</div>
+        </div>
+
+        <div class="unit">
+            <div class="number" id="secs">00</div>
+            <div class="label">СЕКУНД</div>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="card message-card">
+
+    <div class="message-icon" id="messageIcon">✨</div>
+
+    <div class="message-title" id="messageTitle">
+        Новогоднее настроение
+    </div>
+
+    <div class="message-text" id="messageText">
+        Скоро улицы наполнятся огнями,
+        а в воздухе появится настоящее волшебство.
+    </div>
+
+</section>
+
+<div class="decor">
+    <span>🎄</span>
+    <span>⛄</span>
+    <span>❄️</span>
+</div>
+
+<footer class="card footer">
+    Сделано с ❄️ <strong>Nos Nard</strong><br>
+    Новогодний отсчёт · 2027
+</footer>
+
+</div>
+
+<!-- Нижняя кнопка -->
+
+<div class="snowman-menu">
+    <button class="snowman-menu-btn" id="openSnowman">
+        <span class="menu-icon">⛄</span>
+        <span>Лепить снеговика</span>
+    </button>
+</div>
+
+<!-- Игра -->
+
+<div class="snowman-panel" id="snowmanPanel">
+
+    <div class="panel-content">
+
+        <div class="panel-header">
+            <div class="panel-title">⛄ Снежная мастерская</div>
+            <button class="close-btn" id="closeSnowman">✕</button>
+        </div>
+
+        <div class="panel-description">
+            Снег накапливается, пока снегопад включён.
+            Когда сугроб будет достаточно большим, начинай лепить!
+        </div>
+
+        <div class="snow-resource">
+
+            <div class="resource-top">
+                <span>❄️ Снежный запас</span>
+                <span id="snowAmountText">0%</span>
+            </div>
+
+            <div class="resource-bar">
+                <div class="resource-fill" id="resourceFill"></div>
+            </div>
+
+        </div>
+
+        <div class="game-area" id="gameArea">
+
+            <div class="game-instruction" id="gameInstruction">
+                Сначала накопи снег!
+            </div>
+
+            <div class="game-ground" id="gameGround"></div>
+
+            <div class="snowball-roll roll-bottom"></div>
+            <div class="snowball-roll roll-middle"></div>
+            <div class="snowball-roll roll-head"></div>
+
+            <div class="snowman-figure" id="snowmanFigure">
+
+                <div class="figure-ball figure-bottom"></div>
+                <div class="figure-ball figure-middle"></div>
+                <div class="figure-ball figure-head"></div>
+
+                <div class="face">
+
+                    <div class="eye eye-left"></div>
+                    <div class="eye eye-right"></div>
+
+                    <div class="nose"></div>
+
+                    <div class="mouth">
+                        <i></i><i></i><i></i>
+                    </div>
+
+                </div>
+
+                <div class="bucket">
+                    <div class="bucket-body"></div>
+                    <div class="bucket-rim"></div>
+                </div>
+
+                <div class="button-dots">
+                    <i></i><i></i><i></i>
+                </div>
+
+                <div class="arm arm-left"></div>
+                <div class="arm arm-right"></div>
+
+            </div>
+
+        </div>
+
+        <div class="game-progress">
+            <div class="game-progress-fill" id="gameProgressFill"></div>
+        </div>
+
+        <div class="game-status" id="gameStatus">
+            Включи снег и дождись, пока накопится достаточный запас.
+        </div>
+
+        <div class="panel-buttons">
+
+            <button class="panel-btn" id="gameAction" disabled>
+                ❄️ Накопить снег
+            </button>
+
+            <button class="panel-btn secondary" id="gameReset">
+                ↻ Сброс
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* TELEGRAM */
+
+const tg=window.Telegram?.WebApp;
+
+if(tg){
+    tg.ready();
+    tg.expand();
+
+    try{
+        tg.setHeaderColor("#25104b");
+        tg.setBackgroundColor("#140b2a");
+    }catch(e){}
+}
+
+/* DATE */
+
+function updateDate(){
+
+    const now=new Date();
+
+    document.getElementById("today").textContent=
+        new Intl.DateTimeFormat("ru-RU",{
+            weekday:"long",
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+        }).format(now);
+}
+
+updateDate();
+
+/* MESSAGES */
+
+function updateMessage(){
+
+    const now=new Date();
+
+    const targetDate=new Date(
+        now.getFullYear()+1,0,1,0,0,0
+    );
+
+    const daysLeft=Math.ceil(
+        (targetDate-now)/86400000
+    );
+
+    const month=now.getMonth();
+    const day=now.getDate();
+
+    const icon=document.getElementById("messageIcon");
+    const title=document.getElementById("messageTitle");
+    const text=document.getElementById("messageText");
+
+    if(month===11&&day===1){
+
+        icon.textContent="❄️";
+        title.textContent="С первым днём зимы!";
+        text.textContent=
+            "Зима официально началась! Пора доставать уют, гирлянды и создавать своё новогоднее настроение.";
+
+        return;
+    }
+
+    if(daysLeft===30){
+
+        icon.textContent="🎄";
+        title.textContent="До Нового года 30 дней!";
+        text.textContent=
+            "Новый год уже приближается! Кажется, самое время начинать обратный отсчёт и ловить праздничный вайб.";
+
+        return;
+    }
+
+    if(daysLeft===20){
+
+        icon.textContent="✨";
+        title.textContent="Вайб Нового года уже здесь!";
+        text.textContent=
+            "До праздника всего 20 дней. Гирлянды, музыка, уютные вечера и ожидание чуда — всё ближе.";
+
+        return;
+    }
+
+    if(daysLeft===15){
+
+        icon.textContent="🎁";
+        title.textContent="15 дней до волшебства!";
+        text.textContent=
+            "Половина декабря позади. Праздничное настроение постепенно заполняет всё вокруг.";
+
+        return;
+    }
+
+    if(daysLeft===10){
+
+        icon.textContent="🌟";
+        title.textContent="Финишная прямая!";
+        text.textContent=
+            "До Нового года осталось 10 дней. Совсем скоро наступит та самая праздничная ночь.";
+
+        return;
+    }
+
+    if(daysLeft===7){
+
+        icon.textContent="🎅";
+        title.textContent="Всего одна неделя!";
+        text.textContent=
+            "7 дней до Нового года! Пусть эта неделя будет наполнена радостью, уютом и приятными сюрпризами.";
+
+        return;
+    }
+
+    if(daysLeft===3){
+
+        icon.textContent="🎄";
+        title.textContent="3 дня до Нового года!";
+        text.textContent=
+            "Три! Уже три дня! Кажется, праздничная ночь почти на пороге.";
+
+        return;
+    }
+
+    if(daysLeft===2){
+
+        icon.textContent="🎁";
+        title.textContent="Осталось всего 2 дня!";
+        text.textContent=
+            "До 2027 года осталось совсем немного. Пусть последние дни года будут особенными.";
+
+        return;
+    }
+
+    if(daysLeft===1){
+
+        icon.textContent="🎆";
+        title.textContent="Завтра Новый год!";
+        text.textContent=
+            "Последний день ожидания! Завтра часы пробьют полночь и начнётся 2027 год.";
+
+        return;
+    }
+
+    if(month===11&&day===31){
+
+        icon.textContent="🥳";
+        title.textContent="С наступающим!";
+        text.textContent=
+            "Сегодня последний день 2026 года! Пусть всё хорошее останется в памяти, а впереди будет ещё больше прекрасного.";
+
+        return;
+    }
+
+    if(month===0&&day===1){
+
+        icon.textContent="🎉";
+        title.textContent="С Новым 2027 годом!";
+        text.textContent=
+            "Ура! Новый год наступил! Пусть 2027 год принесёт много ярких событий, новых возможностей и радости.";
+
+        return;
+    }
+
+    if(month===0&&day>1){
+
+        icon.textContent="✨";
+        title.textContent="2027 год уже наступил!";
+        text.textContent=
+            "Новый год продолжается! Пусть каждый день этого года будет наполнен чем-то хорошим.";
+
+        return;
+    }
+
+    if(daysLeft>30){
+
+        icon.textContent="🌙";
+        title.textContent="Зима приближается";
+        text.textContent=
+            "До новогодней ночи ещё немного времени, но зимнее волшебство уже совсем близко.";
+    }
+
+    else if(daysLeft>20){
+
+        icon.textContent="❄️";
+        title.textContent="Зимнее настроение";
+        text.textContent=
+            "Декабрь всё ближе! Скоро появятся праздничные огни, украшения и уютные вечера.";
+    }
+
+    else if(daysLeft>15){
+
+        icon.textContent="🎄";
+        title.textContent="Новый год приближается!";
+        text.textContent=
+            "Декабрь набирает обороты. Пора постепенно погружаться в праздничную атмосферу.";
+    }
+
+    else if(daysLeft>10){
+
+        icon.textContent="✨";
+        title.textContent="Всё ближе!";
+        text.textContent=
+            "До Нового года осталось меньше двух недель. Время летит, а праздник уже на горизонте.";
+    }
+
+    else if(daysLeft>7){
+
+        icon.textContent="🎁";
+        title.textContent="Новогодний вайб";
+        text.textContent=
+            "Осталось совсем немного! Самое время наслаждаться декабрьской атмосферой.";
+    }
+
+    else if(daysLeft>3){
+
+        icon.textContent="🌟";
+        title.textContent="Скоро праздник!";
+        text.textContent=
+            "До Нового года считанные дни. Пусть ожидание будет таким же приятным, как сам праздник.";
+    }
+
+    else{
+
+        icon.textContent="🎆";
+        title.textContent="Волшебство уже рядом!";
+        text.textContent=
+            "Новый год почти наступил! Совсем скоро начнётся новая глава.";
+    }
+}
+
+updateMessage();
+
+/* COUNTDOWN */
+
+const target=new Date(2027,0,1,0,0,0);
+
+function pad(n){
+    return String(n).padStart(2,"0");
+}
+
+function updateCountdown(){
+
+    const now=new Date();
+
+    const diff=Math.max(0,target-now);
+
+    const days=Math.floor(diff/86400000);
+    const hours=Math.floor(diff/3600000)%24;
+    const mins=Math.floor(diff/60000)%60;
+    const secs=Math.floor(diff/1000)%60;
+
+    document.getElementById("days").textContent=days;
+    document.getElementById("hours").textContent=pad(hours);
+    document.getElementById("mins").textContent=pad(mins);
+    document.getElementById("secs").textContent=pad(secs);
+}
+
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+/* THEME */
+
+document.getElementById("themeBtn").addEventListener("click",function(){
+
+    document.body.classList.toggle("light");
+
+    this.textContent=
+        document.body.classList.contains("light")
+        ?"🌙"
+        :"☀️";
+});
+
+/* GLOBAL SNOW */
+
+const canvas=document.getElementById("snow");
+const ctx=canvas.getContext("2d");
+
+let flakes=[];
+let snowEnabled=true;
+let animationStarted=false;
+
+const snowBtn=document.getElementById("snowBtn");
+
+function resize(){
+
+    canvas.width=window.innerWidth*devicePixelRatio;
+    canvas.height=window.innerHeight*devicePixelRatio;
+
+    canvas.style.width=window.innerWidth+"px";
+    canvas.style.height=window.innerHeight+"px";
+
+    ctx.setTransform(
+        devicePixelRatio,0,0,
+        devicePixelRatio,0,0
+    );
+
+    flakes=Array.from({
+        length:Math.min(150,Math.floor(window.innerWidth/4))
+    },()=>({
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        r:Math.random()*2.5+.6,
+        s:Math.random()*1.1+.35,
+        w:Math.random()*1.2-.6,
+        a:Math.random()*.7+.25
+    }));
+}
+
+function snow(){
+
+    if(!snowEnabled){
+
+        ctx.clearRect(
+            0,0,
+            window.innerWidth,
+            window.innerHeight
+        );
+
+        animationStarted=false;
+        return;
+    }
+
+    ctx.clearRect(
+        0,0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    ctx.fillStyle="#fff";
+
+    for(const f of flakes){
+
+        ctx.globalAlpha=f.a;
+
+        ctx.beginPath();
+        ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+        ctx.fill();
+
+        f.y+=f.s;
+        f.x+=f.w;
+
+        if(f.y>window.innerHeight+5){
+
+            f.y=-5;
+            f.x=Math.random()*window.innerWidth;
+        }
+
+        if(f.x>window.innerWidth+5)f.x=-5;
+        if(f.x<-5)f.x=window.innerWidth+5;
+    }
+
+    ctx.globalAlpha=1;
+
+    requestAnimationFrame(snow);
+}
+
+function startSnow(){
+
+    if(animationStarted)return;
+
+    animationStarted=true;
+    snow();
+}
+
+snowBtn.addEventListener("click",function(){
+
+    snowEnabled=!snowEnabled;
+
+    this.classList.toggle("off",!snowEnabled);
+
+    this.textContent=snowEnabled?"❄️":"🌨️";
+
+    if(snowEnabled){
+
+        startSnow();
+
+    }else{
+
+        ctx.clearRect(
+            0,0,
+            window.innerWidth,
+            window.innerHeight
+        );
+
+    }
+
+    updateGame();
+});
+
+window.addEventListener("resize",resize);
+resize();
+startSnow();
+
+/* SNOWMAN MENU */
+
+const panel=document.getElementById("snowmanPanel");
+
+document.getElementById("openSnowman").addEventListener("click",()=>{
+
+    panel.classList.add("open");
+    updateGame();
+});
+
+document.getElementById("closeSnowman").addEventListener("click",()=>{
+
+    panel.classList.remove("open");
+});
+
+panel.addEventListener("click",e=>{
+
+    if(e.target===panel){
+        panel.classList.remove("open");
+    }
+});
+
+/* SNOWMAN GAME */
+
+const gameArea=document.getElementById("gameArea");
+const gameGround=document.getElementById("gameGround");
+const gameInstruction=document.getElementById("gameInstruction");
+const gameStatus=document.getElementById("gameStatus");
+const gameAction=document.getElementById("gameAction");
+const gameReset=document.getElementById("gameReset");
+const gameProgressFill=document.getElementById("gameProgressFill");
+const resourceFill=document.getElementById("resourceFill");
+const snowAmountText=document.getElementById("snowAmountText");
+
+let snowResource=0;
+let snowmanStage=0;
+let rollingProgress=0;
+let isRolling=false;
+let lastX=0;
+let lastY=0;
+let snowAccumulationTimer=null;
+
+/* СНЕГ НАКАПЛИВАЕТСЯ */
+
+function accumulateSnow(){
+
+    if(snowEnabled){
+
+        snowResource=Math.min(
+            100,
+            snowResource+(0.14+Math.random()*.12)
+        );
+    }
+
+    updateGame();
+}
+
+snowAccumulationTimer=setInterval(accumulateSnow,300);
+
+/* GAME UI */
+
+const stageRequirements=[100,70,50];
+
+function updateGame(){
+
+    const percent=Math.floor(snowResource);
+
+    resourceFill.style.width=percent+"%";
+    snowAmountText.textContent=percent+"%";
+
+    gameGround.style.height=
+        Math.min(100,snowResource)+"%";
+
+    if(snowmanStage>=3){
+
+        gameArea.className="game-area finished";
+
+        gameStatus.textContent=
+            "🎉 Снеговик готов! У него ведро, морковка и пуговицы!";
+
+        gameInstruction.textContent="Снеговик готов! ⛄";
+
+        gameProgressFill.style.width="100%";
+
+        gameAction.textContent="⛄ Готово!";
+        gameAction.disabled=true;
+
+        return;
+    }
+
+    gameArea.className="game-area";
+
+    if(snowmanStage===1){
+        gameArea.classList.add("stage1");
+    }
+
+    if(snowmanStage===2){
+        gameArea.classList.add("stage2");
+    }
+
+    if(!snowEnabled){
+
+        gameStatus.textContent=
+            "🌨️ Снег отключён. Включи снег, чтобы сугробы росли.";
+
+        gameInstruction.textContent=
+            "Снегопад выключен";
+
+        gameAction.textContent="❄️ Ожидание снега";
+        gameAction.disabled=true;
+
+        return;
+    }
+
+    if(snowResource<30){
+
+        gameStatus.textContent=
+            "❄️ Снега пока мало. Сугроб постепенно растёт.";
+
+        gameInstruction.textContent=
+            "Накопи снежный запас!";
+
+        gameAction.textContent="❄️ Накопить снег";
+        gameAction.disabled=true;
+
+        return;
+    }
+
+    if(snowmanStage===0){
+
+        gameStatus.textContent=
+            "Снега достаточно! Веди пальцем или мышкой по кругу, чтобы лепить основание.";
+
+        gameInstruction.textContent=
+            "Води по кругу, чтобы лепить!";
+
+        gameAction.textContent="⛄ Лепить основание";
+    }
+
+    else if(snowmanStage===1){
+
+        gameStatus.textContent=
+            "Основание готово! Теперь лепи средний шар.";
+
+        gameInstruction.textContent=
+            "Лепим туловище!";
+
+        gameAction.textContent="⛄ Лепить туловище";
+    }
+
+    else if(snowmanStage===2){
+
+        gameStatus.textContent=
+            "Туловище готово! Лепи голову.";
+
+        gameInstruction.textContent=
+            "Лепим голову!";
+
+        gameAction.textContent="⛄ Лепить голову";
+    }
+
+    gameAction.disabled=false;
+}
+
+/* ЛЕПКА */
+
+gameArea.addEventListener("pointerdown",e=>{
+
+    if(!snowEnabled)return;
+    if(snowResource<30)return;
+    if(snowmanStage>=3)return;
+
+    isRolling=true;
+
+    lastX=e.clientX;
+    lastY=e.clientY;
+
+    gameArea.setPointerCapture(e.pointerId);
+});
+
+gameArea.addEventListener("pointermove",e=>{
+
+    if(!isRolling)return;
+    if(snowmanStage>=3)return;
+
+    const dx=e.clientX-lastX;
+    const dy=e.clientY-lastY;
+
+    const distance=Math.sqrt(dx*dx+dy*dy);
+
+    rollingProgress+=distance/3.2;
+
+    lastX=e.clientX;
+    lastY=e.clientY;
+
+    const required=stageRequirements[snowmanStage];
+
+    const progress=Math.min(
+        100,
+        rollingProgress/required*100
+    );
+
+    gameProgressFill.style.width=progress+"%";
+
+    if(rollingProgress>=required){
+
+        completeStage();
+    }
+});
+
+gameArea.addEventListener("pointerup",()=>{
+    isRolling=false;
+});
+
+gameArea.addEventListener("pointercancel",()=>{
+    isRolling=false;
+});
+
+function completeStage(){
+
+    if(snowmanStage>=3)return;
+
+    rollingProgress=0;
+    isRolling=false;
+
+    snowmanStage++;
+
+    gameProgressFill.style.width="0%";
+
+    if(snowmanStage===3){
+
+        gameArea.className="game-area finished";
+
+        gameStatus.textContent=
+            "🎉 Снеговик готов! Ведро, морковка, глазки и пуговицы на месте!";
+
+        gameInstruction.textContent=
+            "Снеговик готов! ⛄";
+
+        gameProgressFill.style.width="100%";
+
+        gameAction.textContent="⛄ Готово!";
+        gameAction.disabled=true;
+
+        return;
+    }
+
+    updateGame();
+}
+
+/* КНОПКА ЭТАПА */
+
+gameAction.addEventListener("click",()=>{
+
+    if(snowmanStage>=3)return;
+    if(!snowEnabled)return;
+    if(snowResource<30)return;
+
+    gameInstruction.textContent=
+        "❄️ Води мышкой или пальцем по кругу!";
+
+    gameStatus.textContent=
+        "Лепи круговыми движениями по области!";
+
+});
+
+/* СБРОС */
+
+gameReset.addEventListener("click",()=>{
+
+    snowmanStage=0;
+    rollingProgress=0;
+    isRolling=false;
+
+    gameProgressFill.style.width="0%";
+    gameArea.className="game-area";
+
+    updateGame();
+});
+
+updateGame();
+
+</script>
+
+</body>
+</html>
